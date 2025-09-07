@@ -5,6 +5,7 @@
 //  Created by Deepak Kumar Maurya on 03/08/25.
 //
 import Foundation
+import CoreData
 
 struct MovieResponse: Decodable {
     let results: [Movie]
@@ -29,8 +30,15 @@ struct Movie: Identifiable, Decodable {
     }
 }
 
-//let mockMovies: [Movie] = [
-//    Movie(id: 1, title: "Inception", posterPath: "https://image.tmdb.org/t/p/w500/qmDpIHrmpJINaRKAfWQfftjCdyi.jpg"),
-//    Movie(id: 2, title: "Interstellar", posterPath: "https://image.tmdb.org/t/p/w500/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg"),
-//    Movie(id: 3, title: "Tenet", posterPath: "https://image.tmdb.org/t/p/w500/k68nPLbIST6NP96JmTxmZijEvCA.jpg")
-//]
+extension Movie{
+    func toEntity(context: NSManagedObjectContext) -> CachedMovie{
+        let entity = CachedMovie(context: context)
+        entity.id = Int64(id)
+        entity.title = title
+        entity.posterPath = posterPath
+        entity.overview = overview
+        entity.releaseDate = releaseDate
+        entity.voteAverage = voteAverage ?? 0.0
+        return entity
+    }
+}

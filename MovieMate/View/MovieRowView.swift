@@ -16,7 +16,7 @@ struct MovieRowView: View {
             LazyHStack(spacing: 15) {
                 ForEach(movies) { movie in
                     ZStack(alignment: .bottom) {
-                        AsyncImage(url: URL(string: movie.posterURL)) { image in
+                        CachedImage(url: URL(string: movie.posterURL)) { image in
                             image.resizable().scaledToFill()
                         } placeholder: {
                             ProgressView()

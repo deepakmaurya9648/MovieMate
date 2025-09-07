@@ -26,9 +26,13 @@ struct MovieDetailView: View {
             // Trailer + Back Button
             ZStack(alignment: .topLeading) {
                 if viewModel.isLoading {
-                    ProgressView("Loading Trailer...")
-                        .frame(height: 300)
-                        .background(Color.black)
+                    AsyncImage(url: URL(string: movie.posterURL)) { image in
+                        image.resizable().scaledToFill()
+                    } placeholder: {
+                        ProgressView()
+                    }
+                    .frame(width: 120, height: 180)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
                 } else if let error = viewModel.errorMessage {
                     Text("Error: \(error)")
                         .foregroundColor(.red)
@@ -60,6 +64,11 @@ struct MovieDetailView: View {
                             favoritesManager.remove(movie)
                         } else {
                             favoritesManager.add(movie)
+                            NotificationManager.shared.scheduleNotification(
+                                        title: "Movie Mate",
+                                        body: "\(movie.title ?? "") has added to your wishlist",
+                                        after: 1 // small delay for UX
+                                    )
                         }
                     }) {
                         Image(systemName: favoritesManager.isFavorite(movie) ? "heart.fill" : "heart")

@@ -15,13 +15,22 @@ final class HomeViewModel: ObservableObject {
     @Published var errorMessage: String? = nil
     
     private let repository = MovieRepository()
+    private let persistence = PersistenceController.shared
     private var cancellables = Set<AnyCancellable>()
+    
+    init() {
+        loadCachedMovies()
+    }
+    
+    private func loadCachedMovies() {
+        popularMovies = persistence.fetchMovies(for: "popular")
+        upcomingMovies = persistence.fetchMovies(for: "upcoming")
+    }
     
     func fetchMovies() {
         isLoading = true
         
         Publishers.Zip(
-            //repository.fetchTrandingMovies(),
             repository.fetchPopularMovies(),
             repository.fetchUpcomingMovies()
         )
@@ -31,9 +40,14 @@ final class HomeViewModel: ObservableObject {
                 self?.errorMessage = error.localizedDescription
             }
         } receiveValue: { [weak self] popular, upcoming in
-            //self?.trendingMovies = trending
-            self?.popularMovies = popular
-            self?.upcomingMovies = upcoming
+            guard let self = self else { return }
+            
+            self.popularMovies = popular
+            self.upcomingMovies = upcoming
+            
+            // Cache the fetched movies
+            self.persistence.saveMovies(popular, for: "popular")
+            self.persistence.saveMovies(upcoming, for: "upcoming")
         }
         .store(in: &cancellables)
     }

@@ -9,7 +9,7 @@ import Foundation
 
 struct RequestBuilder{
     private static let baseURL = "https://api.themoviedb.org/3"
-    private static let api_key = "your-api-key"
+    private static let api_key = "6d58530d6f2607f7d63929b159b82662"
     
     static func requestBuilder(for endpoint: ApiEndpoint) -> URLRequest? {
         guard var component = URLComponents(string: "\(baseURL)/\(endpoint.path)") else {

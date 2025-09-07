@@ -27,7 +27,7 @@ struct HomeView: View {
                         // FEATURED MOVIE
                         if let featured = viewModel.popularMovies.shuffled().first {
                             ZStack(alignment: .bottom) {
-                                AsyncImage(url: URL(string: featured.posterURL)) { image in
+                                CachedImage(url: URL(string: featured.posterURL)) { image in
                                     image
                                         .resizable()
                                         .scaledToFill()
